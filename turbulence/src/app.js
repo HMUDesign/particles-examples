@@ -9,7 +9,7 @@ export default class App extends BaseApp {
 	constructor(config) {
 		super(config);
 
-		this.camera.position.set(0, 0, 2.5);
+		this.camera.position.set(0, 0, 25);
 		this.camera.lookAt(this.scene.position);
 
 		this.particles = new Partices();
