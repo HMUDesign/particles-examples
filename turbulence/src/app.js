@@ -12,7 +12,10 @@ export default class App extends BaseApp {
 		this.camera.position.set(0, 0, 25);
 		this.camera.lookAt(this.scene.position);
 
-		this.particles = new Partices();
+		this.particles = new Partices({
+			sprite: require('./sprites/star.png'),
+			noise: require('./perlin-512.png'),
+		});
 		this.scene.add(this.particles);
 	}
 

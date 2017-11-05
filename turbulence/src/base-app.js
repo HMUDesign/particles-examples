@@ -9,7 +9,7 @@ export default class BaseApp {
 
 			document.body.style.overflow = 'hidden';
 			document.body.style.margin = '0';
-			document.body.style.backgroundColor = 'gray';
+			document.body.style.backgroundColor = '#000000';
 
 			window.addEventListener('resize', () => this._resize(), false);
 		}
