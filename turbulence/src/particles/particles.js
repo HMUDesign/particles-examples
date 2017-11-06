@@ -64,6 +64,7 @@ export default class Particles extends THREE.Points {
 
 		this.config = config;
 		this.count = 0;
+		this.countOverflow = 0;
 
 		if (this.config.instant) {
 			this._nextInstant = 0;
@@ -150,7 +151,15 @@ export default class Particles extends THREE.Points {
 			this._nextInstant = time + this.config.lifespan;
 		}
 		else {
-			count = Math.min(delta, this.config.lifespan) * this.config.count / this.config.lifespan;
+			count = Math.min(delta, this.config.lifespan) * this.config.count / this.config.lifespan - this.countOverflow;
+			if (count > 0) {
+				this.countOverflow = Math.ceil(count) - count;
+				count = Math.ceil(count);
+			}
+			else {
+				this.countOverflow = -count;
+				count = 0;
+			}
 		}
 
 		for (let i = 0; i < count; i++) {
