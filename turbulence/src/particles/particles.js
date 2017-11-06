@@ -17,6 +17,7 @@ export default class Particles extends THREE.Points {
 		config.lifespan = config.lifespan || 20;
 		config.position = config.position || new THREE.Vector3(0, 0, 0);
 		config.velocity = config.velocity || new THREE.Vector3(0, 0, 0);
+		config.rotation = config.rotation || 0;
 		config.color = config.color || new THREE.Color(0xaa88ff);
 		config.opacity = config.opacity || 1;
 		config.size = config.size || 2.5;
@@ -35,6 +36,7 @@ export default class Particles extends THREE.Points {
 		geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(config.count * 3), 3).setDynamic(true));
 		geometry.addAttribute('positionStart', new THREE.BufferAttribute(new Float32Array(config.count * 3), 3).setDynamic(true));
 		geometry.addAttribute('velocity', new THREE.BufferAttribute(new Float32Array(config.count * 3), 3).setDynamic(true));
+		geometry.addAttribute('rotation', new THREE.BufferAttribute(new Float32Array(config.count * 1), 1).setDynamic(true));
 		geometry.addAttribute('color', new THREE.BufferAttribute(new Float32Array(config.count * 3), 3).setDynamic(true));
 		geometry.addAttribute('opacity', new THREE.BufferAttribute(new Float32Array(config.count), 1).setDynamic(true));
 		geometry.addAttribute('size', new THREE.BufferAttribute(new Float32Array(config.count), 1).setDynamic(true));
@@ -99,6 +101,13 @@ export default class Particles extends THREE.Points {
 		velocityAttribute.array[index * 3 + 1] = velocity.y + (Math.random() - 0.5) * velocityRandomness;
 		velocityAttribute.array[index * 3 + 2] = velocity.z + (Math.random() - 0.5) * velocityRandomness;
 		velocityAttribute.needsUpdate = true;
+
+		// rotation
+		let rotationAttribute = this.geometry.getAttribute('rotation');
+		let rotation = this.config.rotation;
+		let rotationRandomness = Math.PI * 2.0;
+		rotationAttribute.array[index] = rotation + (Math.random() - 0.5) * rotationRandomness;
+		rotationAttribute.needsUpdate = true;
 
 		// color
 		let colorAttribute = this.geometry.getAttribute('color');

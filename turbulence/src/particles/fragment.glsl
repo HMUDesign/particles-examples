@@ -1,22 +1,17 @@
-float scaleLinear( float value, vec2 valueDomain ) {
-	return ( value - valueDomain.x ) / ( valueDomain.y - valueDomain.x );
-}
-
-float scaleLinear( float value, vec2 valueDomain, vec2 valueRange ) {
-	return mix( valueRange.x, valueRange.y, scaleLinear( value, valueDomain ) );
-}
-
 varying vec4 vColor;
-varying float lifeLeft;
+varying float vRotation;
 
 uniform sampler2D tSprite;
 
 void main() {
-	float alpha = lifeLeft * 0.75;
-	if (lifeLeft > 0.995) {
-		alpha = scaleLinear(lifeLeft, vec2(1.0, 0.995), vec2(0.0, 1.0));
-	}
+	float c = cos(vRotation);
+	float s = sin(vRotation);
 
-	vec4 tex = texture2D(tSprite, gl_PointCoord);
-	gl_FragColor = vec4(vColor.rgb, vColor.a * alpha) * tex;
+	vec2 rotatedUV = vec2(
+		c * (gl_PointCoord.x - 0.5) + s * (gl_PointCoord.y - 0.5) + 0.5,
+		c * (gl_PointCoord.y - 0.5) - s * (gl_PointCoord.x - 0.5) + 0.5
+	);
+
+	vec4 rotatedTexture = texture2D(tSprite, rotatedUV);
+	gl_FragColor = vColor * rotatedTexture;
 }
