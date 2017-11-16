@@ -8,7 +8,7 @@ attribute vec3 color;
 attribute float opacity;
 attribute float size;
 attribute float lifespan;
-attribute float startTime;
+attribute float delay;
 attribute float turbulence;
 
 varying vec4 vColor;
@@ -23,9 +23,9 @@ float scaleLinear( float value, vec2 valueDomain, vec2 valueRange ) {
 }
 
 void main() {
-	float timeElapsed = uTime - startTime;
+	float timeElapsed = uTime - delay;
 	if (timeElapsed < 0.0 || timeElapsed > lifespan) {
-		vColor = vec4(color, opacity);
+		vColor = vec4(color, 0);
 		vRotation = rotation;
 		gl_PointSize = 0.0;
 		gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
