@@ -11,13 +11,27 @@ export default class Basic extends Behaviour {
 	attributes = [
 		{
 			name: 'lifespan',
-			size: 1,
+			type: 'float',
 		},
 		{
 			name: 'delay',
-			size: 1,
+			type: 'float',
 		},
 	];
+
+	vertexMethods = [
+		[
+			'float scaleLinear( float value, vec2 valueDomain ) {',
+			'	return ( value - valueDomain.x ) / ( valueDomain.y - valueDomain.x );',
+			'}',
+		].join('\n'),
+
+		[
+			'float scaleLinear( float value, vec2 valueDomain, vec2 valueRange ) {',
+			'	return mix( valueRange.x, valueRange.y, scaleLinear( value, valueDomain ) );',
+			'}',
+		].join('\n'),
+	]
 
 	init(particles) {
 		particles.config.lifespan = this.lifespan(-1);

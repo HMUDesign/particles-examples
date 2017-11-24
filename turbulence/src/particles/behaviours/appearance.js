@@ -14,21 +14,29 @@ export default class Appearance extends Behaviour {
 	attributes = [
 		{
 			name: 'color',
-			size: 3,
+			type: 'vec3',
 		},
 		{
 			name: 'opacity',
-			size: 1,
+			type: 'float',
 		},
 		{
 			name: 'size',
-			size: 1,
+			type: 'float',
+		},
+	];
+
+	varyings = [
+		{
+			name: 'vColor',
+			type: 'vec4',
 		},
 	];
 
 	uniforms() {
 		return {
 			name: 'tSprite',
+			type: 'sampler2D',
 			value: this.textureLoader.load(this.sprite),
 		};
 	}

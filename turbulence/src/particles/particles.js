@@ -1,5 +1,12 @@
 import THREE from 'three';
 
+const TYPE_SIZES = {
+	float: 1,
+	vec2: 2,
+	vec3: 3,
+	vec4: 4,
+};
+
 export default class Particles extends THREE.Group {
 	constructor(config = {}, behaviours = []) {
 		config.count = config.count || 500000;
@@ -14,7 +21,8 @@ export default class Particles extends THREE.Group {
 		this.runBehaviour('init', this);
 
 		let geometry = new THREE.BufferGeometry();
-		for (let { name, size } of this.runBehaviour('attributes')) {
+		for (let { name, type } of this.runBehaviour('attributes')) {
+			const size = TYPE_SIZES[type];
 			geometry.addAttribute(name, new THREE.BufferAttribute(new Float32Array(config.count * size), size).setDynamic(true));
 		}
 
@@ -29,8 +37,8 @@ export default class Particles extends THREE.Group {
 			blending: THREE.AdditiveBlending,
 
 			uniforms,
-			vertexShader: require('./vertex.glsl'),
-			fragmentShader: require('./fragment.glsl'),
+			vertexShader: this.vertexShader,
+			fragmentShader: this.fragmentShader,
 		});
 
 		this.points = new THREE.Points(geometry, material);
@@ -44,6 +52,72 @@ export default class Particles extends THREE.Group {
 		if (this.config.pulse) {
 			this._nextPulse = 0;
 		}
+	}
+
+	get vertexShader() {
+		/* eslint-disable indent */
+		return [
+			'uniform float uTime;',
+			...this.runBehaviour('uniforms').map(({ name, type }) => `uniform ${type} ${name};`),
+			...this.runBehaviour('attributes').filter(({ name }) => name !== 'position').map(({ name, type }) => `attribute ${type} ${name};`),
+			...this.runBehaviour('varyings').map(({ name, type }) => `varying ${type} ${name};`),
+
+			...this.runBehaviour('vertexMethods'),
+
+			'void main() {',
+				'float timeElapsed = uTime - delay;',
+				'if (timeElapsed < 0.0 || timeElapsed > lifespan) {',
+					'vColor = vec4(color, 0);',
+					'vRotation = rotation;',
+					'gl_PointSize = 0.0;',
+					'gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+					'return;',
+				'}',
+
+				'float remaining = 1.0 - (timeElapsed / lifespan);',
+				'if (remaining > 0.995) {',
+					'remaining = scaleLinear(remaining, vec2(1.0, 0.995), vec2(0.0, 1.0));',
+				'}',
+
+				'vec3 newPosition = positionStart + velocity * timeElapsed;',
+
+				'vColor = vec4(color, opacity * remaining);',
+				'vRotation = rotation;',
+
+				'vec3 noise = texture2D(tNoise, vec2(newPosition.x * 0.015 + (uTime * 0.05), newPosition.y * 0.02 + (uTime * 0.06))).rgb;',
+				'vec3 noiseVel = (noise.rgb - 0.5) * 2.0 * turbulence;',
+				'newPosition = mix(newPosition, newPosition + noiseVel, timeElapsed / lifespan);',
+
+				'gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);',
+				'gl_PointSize = size * remaining;',
+			'}',
+		].join('\n');
+		/* eslint-enable indent */
+	}
+
+	get fragmentShader() {
+		/* eslint-disable indent */
+		return [
+			'uniform float uTime;',
+			...this.runBehaviour('uniforms').map(({ name, type }) => `uniform ${type} ${name};`),
+			...this.runBehaviour('varyings').map(({ name, type }) => `varying ${type} ${name};`),
+
+			...this.runBehaviour('fragmentMethods'),
+
+			'void main() {',
+				'float c = cos(vRotation);',
+				'float s = sin(vRotation);',
+
+				'vec2 rotatedUV = vec2(',
+					'c * (gl_PointCoord.x - 0.5) + s * (gl_PointCoord.y - 0.5) + 0.5,',
+					'c * (gl_PointCoord.y - 0.5) - s * (gl_PointCoord.x - 0.5) + 0.5',
+				');',
+
+				'vec4 rotatedTexture = texture2D(tSprite, rotatedUV);',
+				'gl_FragColor = vColor * rotatedTexture;',
+			'}',
+		].join('\n');
+		/* eslint-enable indent */
 	}
 
 	runBehaviour(name, ...args) {

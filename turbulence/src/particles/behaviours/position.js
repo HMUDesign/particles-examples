@@ -14,19 +14,19 @@ export default class Position extends Behaviour {
 	attributes = [
 		{
 			name: 'position',
-			size: 3,
+			type: 'vec3',
 		},
 		{
 			name: 'positionStart',
-			size: 3,
+			type: 'vec3',
 		},
 		{
 			name: 'velocity',
-			size: 3,
+			type: 'vec3',
 		},
 		{
 			name: 'turbulence',
-			size: 1,
+			type: 'float',
 		},
 	];
 
@@ -36,6 +36,7 @@ export default class Position extends Behaviour {
 
 		return {
 			name: 'tNoise',
+			type: 'sampler2D',
 			value: texture,
 		};
 	}

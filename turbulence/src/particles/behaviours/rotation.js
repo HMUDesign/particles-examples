@@ -9,7 +9,12 @@ export default class Rotation extends Behaviour {
 
 	attributes = {
 		name: 'rotation',
-		size: 1,
+		type: 'float',
+	};
+
+	varyings = {
+		name: 'vRotation',
+		type: 'float',
 	};
 
 	spawn(index) {
