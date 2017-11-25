@@ -1,4 +1,8 @@
-import THREE from 'three';
+import { Scene } from 'three/src/scenes/Scene';
+import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera';
+import { Vector3 } from 'three/src/math/Vector3';
+import { WebGLRenderer } from 'three/src/renderers/WebGLRenderer';
+import { Clock } from 'three/src/core/Clock';
 import TWEEN from 'tween';
 
 export default class BaseApp {
@@ -18,13 +22,13 @@ export default class BaseApp {
 			config.height = config.parent.offsetHeight;
 		}
 
-		this.scene = new THREE.Scene();
+		this.scene = new Scene();
 
-		this.camera = new THREE.PerspectiveCamera(75, config.width / config.height, 0.1, 1000);
-		this.camera.position.copy(config.camera || new THREE.Vector3(0, 0, 0));
+		this.camera = new PerspectiveCamera(75, config.width / config.height, 0.1, 1000);
+		this.camera.position.copy(config.camera || new Vector3(0, 0, 0));
 		this.scene.add(this.camera);
 
-		this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+		this.renderer = new WebGLRenderer({ alpha: true, antialias: true });
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setClearColor(0x000000, 0);
 		this.renderer.setSize(config.width, config.height);
@@ -32,7 +36,7 @@ export default class BaseApp {
 		this.renderer.domElement.style.display = 'block';
 		config.parent.appendChild(this.renderer.domElement);
 
-		this.clock = new THREE.Clock(false);
+		this.clock = new Clock(false);
 
 		if (typeof TWEEN !== 'undefined') {
 			TWEEN._time = 0;

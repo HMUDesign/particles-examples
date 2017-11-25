@@ -1,4 +1,10 @@
-import THREE from 'three';
+import { Group } from 'three/src/objects/Group';
+import { TextureLoader } from 'three/src/loaders/TextureLoader';
+import { BufferAttribute } from 'three/src/core/BufferAttribute';
+import { BufferGeometry } from 'three/src/core/BufferGeometry';
+import { ShaderMaterial } from 'three/src/materials/ShaderMaterial';
+import { AdditiveBlending } from 'three/src/constants';
+import { Points } from 'three/src/objects/Points';
 
 const TYPE_SIZES = {
 	float: 1,
@@ -7,7 +13,7 @@ const TYPE_SIZES = {
 	vec4: 4,
 };
 
-export default class Particles extends THREE.Group {
+export default class Particles extends Group {
 	constructor(config = {}, behaviours = []) {
 		config.count = config.count || 500000;
 		config.pulse = config.pulse || 0;
@@ -16,14 +22,14 @@ export default class Particles extends THREE.Group {
 
 		this.config = config;
 		this.behaviours = behaviours;
-		this.textureLoader = new THREE.TextureLoader();
+		this.textureLoader = new TextureLoader();
 
 		this.runBehaviour('init', this);
 
-		let geometry = new THREE.BufferGeometry();
+		let geometry = new BufferGeometry();
 		for (let { name, type } of this.runBehaviour('attributes')) {
 			const size = TYPE_SIZES[type];
-			geometry.addAttribute(name, new THREE.BufferAttribute(new Float32Array(config.count * size), size).setDynamic(true));
+			geometry.addAttribute(name, new BufferAttribute(new Float32Array(config.count * size), size).setDynamic(true));
 		}
 
 		let uniforms = { uTime: { value: 0.0 } };
@@ -31,17 +37,17 @@ export default class Particles extends THREE.Group {
 			uniforms[name] = value;
 		}
 
-		let material = new THREE.ShaderMaterial({
+		let material = new ShaderMaterial({
 			transparent: true,
 			depthWrite: false,
-			blending: THREE.AdditiveBlending,
+			blending: AdditiveBlending,
 
 			uniforms,
 			vertexShader: this.vertexShader,
 			fragmentShader: this.fragmentShader,
 		});
 
-		this.points = new THREE.Points(geometry, material);
+		this.points = new Points(geometry, material);
 		this.points.frustumCulled = false;
 
 		this.add(this.points);

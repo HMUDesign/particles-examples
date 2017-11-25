@@ -1,4 +1,4 @@
-import THREE from 'three';
+import { RepeatWrapping } from 'three/src/constants';
 import Behaviour from '../behaviour';
 
 export default class Position extends Behaviour {
@@ -32,7 +32,7 @@ export default class Position extends Behaviour {
 
 	uniforms() {
 		let texture = this.textureLoader.load(this.noise);
-		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		texture.wrapS = texture.wrapT = RepeatWrapping;
 
 		return {
 			name: 'tNoise',

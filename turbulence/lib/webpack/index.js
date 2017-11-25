@@ -67,16 +67,34 @@ module.exports = function(dirname, options) {
 					],
 				},
 				{
-					test: /\.glsl$/,
-					use: [
-						'./lib/webpack/glsl-loader',
-					],
-				},
-				{
 					test: /\.js$/,
 					include: path.resolve(dirname, 'src'),
 					use: [
-						'babel-loader',
+						{
+							loader: 'babel-loader',
+						},
+					],
+				},
+
+				{
+					test: /\.glsl$/,
+					include: path.resolve(dirname, 'node_modules'),
+					use: [
+						{
+							loader: './lib/webpack/glsl-loader',
+							options: {
+								import: false,
+							},
+						},
+					],
+				},
+				{
+					test: /\.glsl$/,
+					include: path.resolve(dirname, 'src'),
+					use: [
+						{
+							loader: './lib/webpack/glsl-loader',
+						},
 					],
 				},
 

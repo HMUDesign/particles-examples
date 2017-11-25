@@ -1,11 +1,11 @@
-import THREE from 'three';
+import { Color } from 'three/src/math/Color';
 import Behaviour from '../behaviour';
 
 export default class Appearance extends Behaviour {
 	constructor({ color, opacity, size, sprite } = {}) {
 		super();
 
-		this.color = color || new THREE.Color(0xaa88ff);
+		this.color = color || new Color(0xaa88ff);
 		this.opacity = opacity;
 		this.size = size;
 		this.sprite = sprite;
