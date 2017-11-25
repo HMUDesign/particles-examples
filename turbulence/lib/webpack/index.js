@@ -1,7 +1,10 @@
+const fs = require('fs');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+const HtmlPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const { DefinePlugin, BannerPlugin } = require('webpack');
+const banner = fs.readFileSync(path.join(__dirname, 'banner.txt'), 'utf8');
 
 function addPolyfill(input) {
 	if (typeof input === 'string') {
@@ -129,18 +132,7 @@ module.exports = function(dirname, options) {
 		},
 
 		plugins: [
-			new ExtractTextPlugin('[name].[hash].min.css'),
-			options.dev ? null : new webpack.optimize.UglifyJsPlugin({
-				sourceMap: true,
-				sourceMapContents: true,
-			}),
-			new webpack.DefinePlugin({
-				'process.env.NODE_ENV': JSON.stringify(options.dev
-					? 'development'
-					: 'production'
-				),
-			}),
-			new HtmlWebpackPlugin({
+			new HtmlPlugin({
 				title: options.title,
 				filename: 'index.html',
 				minify: {
@@ -150,6 +142,17 @@ module.exports = function(dirname, options) {
 					? 'template.dev.ejs'
 					: 'template.prod.ejs'
 				),
+			}),
+			new DefinePlugin({
+				'process.env.NODE_ENV': JSON.stringify(options.dev
+					? 'development'
+					: 'production'
+				),
+			}),
+			new ExtractTextPlugin('[name].[hash].min.css'),
+			options.dev ? null : new UglifyJsPlugin(),
+			new BannerPlugin({
+				banner,
 			}),
 		].filter(v => v),
 	};

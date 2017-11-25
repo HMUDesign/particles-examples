@@ -5,31 +5,32 @@
   "scripts": {
     "test": "npm run eslint",
     "clean": "rm -rf build/assets build/index.html build/*.js build/*.css build/*.map",
-    "build": "npm run test && npm run clean && webpack -p --progress",
-    "develop": "webpack-dev-server -d --progress --watch --content-base build --history-api-fallback",
+    "build": "npm run test && npm run clean && webpack --progress",
+    "develop": "webpack-dev-server --debug --progress --watch --content-base build --history-api-fallback",
     "eslint": "eslint lib/ src/"
   },
   "dependencies": {
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-polyfill": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-es2017": "^6.24.1",
-    "css-loader": "^0.28.4",
-    "extract-text-webpack-plugin": "^3.0.0",
-    "file-loader": "^0.11.2",
-    "html-webpack-plugin": "^2.29.0",
-    "node-sass": "^4.5.3",
-    "postcss-loader": "^2.0.6",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.5",
+    "html-webpack-plugin": "^2.30.1",
+    "node-sass": "^4.7.2",
+    "postcss-loader": "^2.0.9",
     "sass-loader": "^6.0.6",
-    "sass-resources-loader": "^1.3.0",
-    "style-loader": "^0.18.2",
-    "webpack": "^3.3.0"
+    "sass-resources-loader": "^1.3.1",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.8.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
-    "eslint": "^4.2.0",
-    "webpack-dev-server": "^2.5.1"
+    "eslint": "^4.11.0",
+    "uglifyjs-webpack-plugin": "^1.1.1",
+    "webpack-dev-server": "^2.9.4"
   }
 }
